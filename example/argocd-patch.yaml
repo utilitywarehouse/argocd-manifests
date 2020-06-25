@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-rbac-cm
+data:
+  policy.csv: |
+    g,user@example.com,role:admin
+    g,user1@example.com,role:admin
+  scopes: "[email]"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  dex.config: |
+    connectors:
+      - type: oidc
+        id: google
+        name: Google
+        config:
+          issuer: https://accounts.google.com
+          clientID: 123456789101-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
+          clientSecret: $dex.google.clientSecret
+  repositories: |
+    - name: kubernetes-manifests
+      sshPrivateKeySecret:
+        key: sshPrivateKey
+        name: ssh
+      type: git
+      url: git@github.com:example/kubernetes-manifests.git
+  url: https://argocd.example.com
