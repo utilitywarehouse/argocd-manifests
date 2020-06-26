@@ -16,8 +16,8 @@ Reference them in your kustomization.yaml, like so:
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 bases:
-  - github.com/utilitywarehouse/gatekeeper-manifests/cluster?ref=1.6.1-1
-  - github.com/utilitywarehouse/gatekeeper-manifests/namespaced?ref=1.6.1-1
+  - github.com/utilitywarehouse/argocd-manifests/cluster?ref=1.6.1-1
+  - github.com/utilitywarehouse/argocd-manifests/namespaced?ref=1.6.1-1
 ```
 
 Refer to the [example](example/).
