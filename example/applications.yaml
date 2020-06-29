@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: example-namespace-1
+spec:
+  destination:
+    namespace: example-namespace-1
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: cluster/example-namespace-1
+    repoURL: git@github.com:example/kubernetes-manifests.git
+    targetRevision: master
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: example-namespace-2
+spec:
+  destination:
+    namespace: example-namespace-2
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: cluster/example-namespace-2
+    repoURL: git@github.com:example/kubernetes-manifests.git
+    targetRevision: master
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true

@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  admin.enabled: "false"
+  application.instanceLabelKey: argocd.argoproj.io/instance
+  # https://argoproj.github.io/argo-cd/faq/#why-is-my-application-stuck-in-progressing-state
+  resource.customizations: |
+    extensions/Ingress:
+      health.lua: |
+        hs = {}
+        hs.status = "Healthy"
+        return hs
+    networking.k8s.io/Ingress:
+      health.lua: |
+        hs = {}
+        hs.status = "Healthy"
+        return hs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "8082"
+  name: argocd-metrics
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "8083"
+  name: argocd-server-metrics
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "8084"
+  name: argocd-repo-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "5558"
+  name: argocd-dex-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-repo-server
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: setup-strongbox
+          image: alpine
+          command:
+            - /bin/sh
+            - -c
+            - |
+              apk add --no-cache curl git openssl ca-certificates &&\
+              curl -L -o strongbox https://github.com/uw-labs/strongbox/releases/download/v0.1.0/strongbox_0.1.0_linux_amd64 &&\
+              chmod +x strongbox &&\
+              mv strongbox /usr/local/bin/ &&\
+              strongbox -git-config
+          volumeMounts:
+            - name: strongbox-bin
+              mountPath: /usr/local/bin/
+            - name: gitconfig
+              mountPath: /root/
+      containers:
+        - name: argocd-repo-server
+          volumeMounts:
+            - name: strongbox-bin
+              mountPath: /usr/local/bin/strongbox
+              subPath: strongbox
+            - name: gitconfig
+              mountPath: /etc/gitconfig
+              subPath: .gitconfig
+            - name: strongbox-secret
+              mountPath: /home/argocd/.strongbox_keyring
+              subPath: .strongbox_keyring
+              readOnly: true
+      volumes:
+        - name: strongbox-bin
+          emptyDir: {}
+        - name: gitconfig
+          emptyDir: {}
+        - name: strongbox-secret
+          secret:
+            secretName: strongbox
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-server
+spec:
+  template:
+    spec:
+      containers:
+        - name: argocd-server
+          args:
+            # serve over HTTP for TLS termination on a load balancer
+            - --insecure
