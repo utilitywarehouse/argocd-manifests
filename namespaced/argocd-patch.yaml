@@ -80,6 +80,9 @@ spec:
               mountPath: /root/
       containers:
         - name: argocd-repo-server
+          env:
+            - name: ARGOCD_EXEC_TIMEOUT
+              value: "10m"
           volumeMounts:
             - name: strongbox-bin
               mountPath: /usr/local/bin/strongbox
@@ -109,6 +112,33 @@ spec:
     spec:
       containers:
         - name: argocd-server
-          args:
+          command:
+            - argocd-server
+            - --staticassets
+            - /shared/app
             # serve over HTTP for TLS termination on a load balancer
             - --insecure
+            - --repo-server-timeout-seconds
+            - "500"
+            - --request-timeout
+            - "10m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-application-controller
+spec:
+  template:
+    spec:
+      containers:
+        - name: argocd-application-controller
+          command:
+            - argocd-application-controller
+            - --status-processors
+            - "20"
+            - --operation-processors
+            - "10"
+            - --app-resync
+            - "60"
+            - --repo-server-timeout-seconds
+            - "300"
