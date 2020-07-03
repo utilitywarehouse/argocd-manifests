@@ -14,4 +14,3 @@ resources:
   - secrets/ssh.yaml
 patchesStrategicMerge:
   - argocd-patch.yaml
-  - secrets/argocd-secret-patch.yaml
