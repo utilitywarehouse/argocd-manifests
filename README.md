@@ -25,3 +25,14 @@ bases:
 ```
 
 Refer to the [example](example/).
+
+## Update
+
+The upstream kustomize manifests are vendored in this repository to improve `kustomize build` times.
+
+Run this make target to update the manifests from the upstream. It may take a
+few minutes:
+
+```
+$ make update v1.6.1
+```
