@@ -11,3 +11,11 @@ patchesStrategicMerge:
 images:
   - name: argoproj/argocd
     newTag: v1.6.1
+vars:
+  - name: ARGOCD_REDIS_SERVICE
+    objref:
+      kind: Service
+      name: argocd-redis
+      apiVersion: v1
+    fieldref:
+      fieldpath: metadata.name
