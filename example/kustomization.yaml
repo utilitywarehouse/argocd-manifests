@@ -14,3 +14,7 @@ resources:
   - secrets/ssh.yaml
 patchesStrategicMerge:
   - argocd-patch.yaml
+secretGenerator:
+  - name: strongbox
+    files:
+      - .strongbox_keyring=secrets/strongbox_keyring
