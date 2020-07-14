@@ -57,6 +57,7 @@ kind: Deployment
 metadata:
   name: argocd-repo-server
 spec:
+  replicas: 2
   template:
     spec:
       initContainers:
