@@ -20,8 +20,8 @@ Reference them in your kustomization.yaml, like so:
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 bases:
-  - github.com/utilitywarehouse/argocd-manifests/cluster?ref=1.6.1-2
-  - github.com/utilitywarehouse/argocd-manifests/namespaced?ref=1.6.1-2
+  - github.com/utilitywarehouse/argocd-manifests/cluster?ref=1.6.1-3
+  - github.com/utilitywarehouse/argocd-manifests/namespaced?ref=1.6.1-3
 ```
 
 Refer to the [example](example/).
