@@ -135,9 +135,9 @@ spec:
           command:
             - argocd-application-controller
             - --status-processors
-            - "20"
+            - "50"
             - --operation-processors
-            - "10"
+            - "25"
             - --app-resync
             - "60"
             - --repo-server-timeout-seconds
