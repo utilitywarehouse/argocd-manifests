@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 # Hack to take arguments from command line
-# Usage: `make update v1.6.1`
+# Usage: `make update v1.6.2`
 # https://stackoverflow.com/questions/6273608/how-to-pass-argument-to-makefile-from-command-line
 update:
 	@sed -ri 's#v[0-9]+\.[0-9]+\.[0-9]+#$(filter-out $@,$(MAKECMDGOALS))#g' namespaced/kustomization.yaml
