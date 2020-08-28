@@ -9,12 +9,22 @@ bases:
 resources:
   - applications.yaml
   - argocd-ingress.yaml
-  # include in-cluster cluster configuration for a namespaced install
-  - secrets/in-cluster.yaml
-  - secrets/ssh.yaml
+  - rbac.yaml
 patchesStrategicMerge:
   - argocd-patch.yaml
 secretGenerator:
+  # include in-cluster cluster configuration for a namespaced install
+  - name: in-cluster
+    envs:
+      - secrets/in-cluster
+    options:
+      labels:
+        argocd.argoproj.io/secret-type: cluster
+  - name: ssh
+    files:
+      - sshPrivateKey=secrets/ssh.pem
+    options:
+      disableNameSuffixHash: true
   - name: strongbox
     files:
       - .strongbox_keyring=secrets/strongbox_keyring
