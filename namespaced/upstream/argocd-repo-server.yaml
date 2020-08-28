@@ -45,11 +45,6 @@ spec:
         - $(ARGOCD_REDIS_SERVICE):6379
         image: argoproj/argocd:latest
         imagePullPolicy: Always
-        livenessProbe:
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          tcpSocket:
-            port: 8081
         name: argocd-repo-server
         ports:
         - containerPort: 8081
@@ -64,6 +59,10 @@ spec:
           name: ssh-known-hosts
         - mountPath: /app/config/tls
           name: tls-certs
+        - mountPath: /app/config/gpg/source
+          name: gpg-keys
+        - mountPath: /app/config/gpg/keys
+          name: gpg-keyring
       volumes:
       - configMap:
           name: argocd-ssh-known-hosts-cm
@@ -71,3 +70,8 @@ spec:
       - configMap:
           name: argocd-tls-certs-cm
         name: tls-certs
+      - configMap:
+          name: argocd-gpg-keys-cm
+        name: gpg-keys
+      - emptyDir: {}
+        name: gpg-keyring
