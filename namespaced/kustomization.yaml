@@ -10,7 +10,7 @@ patchesStrategicMerge:
   - argocd-patch.yaml
 images:
   - name: argoproj/argocd
-    newTag: v1.7.5
+    newTag: v1.7.6
 vars:
   - name: ARGOCD_REDIS_SERVICE
     objref:
