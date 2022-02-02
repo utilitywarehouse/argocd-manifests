@@ -1,3 +1,6 @@
+**NOTE:** archived since we are not using argo anymore and the setup is getting outdated
+
+
 # argocd-manifests
 
 This repository provides Kustomize bases to deploy an instance of
